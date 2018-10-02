@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "serve -s build",
+    "dev": "inferno-scripts start",
     "build": "inferno-scripts build",
     "test": "inferno-scripts test --env=jsdom",
     "eject": "inferno-scripts eject"

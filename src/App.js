@@ -1,7 +1,16 @@
 import './App.css';
 import { Component } from 'inferno';
 
-class App extends Component {
+const ListItem = props => (
+  <div
+    className={props.index % 2 ? 'item odd' : 'item even'}
+    style={{ top: Scroller.ITEM_HEIGHT * props.index }}
+  >
+    List Item {props.index + 1}
+  </div>
+);
+
+class Scroller extends Component {
   static get ITEM_HEIGHT() {
     return 48;
   }
@@ -11,7 +20,7 @@ class App extends Component {
   }
 
   static get BUFFER() {
-    return App.ITEM_HEIGHT * 2;
+    return Scroller.ITEM_HEIGHT;
   }
 
   constructor() {
@@ -20,7 +29,7 @@ class App extends Component {
     this.rafLoop = this.rafLoop.bind(this);
     this.setScrollPosition = this.setScrollPosition.bind(this);
 
-    this.items = new Array(10000).fill(1);
+    this.items = new Array(1000).fill(1);
 
     this.state = {
       lastScroll: 0
@@ -29,10 +38,9 @@ class App extends Component {
 
   isInView(index) {
     if (
-      (index + 1) * App.ITEM_HEIGHT >
-        this.state.lastScroll - App.BUFFER &&
-      (index + 1) * App.ITEM_HEIGHT <
-        this.state.lastScroll + App.CONTAINER_HEIGHT + App.BUFFER
+      (index + 1) * Scroller.ITEM_HEIGHT > this.state.lastScroll - Scroller.BUFFER &&
+      (index + 1) * Scroller.ITEM_HEIGHT <
+        this.state.lastScroll + Scroller.CONTAINER_HEIGHT + Scroller.BUFFER
     ) {
       return true;
     }
@@ -55,7 +63,6 @@ class App extends Component {
 
   componentDidMount() {
     this.scrollContainer = document.querySelector('.container');
-    this.setScrollPosition();
     this.rafLoop();
   }
 
@@ -64,19 +71,11 @@ class App extends Component {
       <div className="container">
         <div
           className="itemWrapper"
-          style={{ height: App.ITEM_HEIGHT * this.items.length }}
+          style={{ height: Scroller.ITEM_HEIGHT * this.items.length }}
         >
           {this.items.map((item, index) => {
             if (this.isInView(index)) {
-              return (
-                <div
-                  className={index % 2 ? 'item odd' : 'item even'}
-                  key={index}
-                  style={{ top: App.ITEM_HEIGHT * index }}
-                >
-                  List Item {index + 1}
-                </div>
-              );
+              return <ListItem key={index} index={index} />;
             }
             return null;
           })}
@@ -86,4 +85,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Scroller;
